@@ -1,0 +1,176 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  color: #1f2937;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.navbar {
+  background: #111827;
+  color: white;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.brand {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.user-badge {
+  background: #374151;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.stack-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 60px auto;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+input,
+select,
+textarea,
+button {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.95;
+}
+
+.secondary-btn {
+  display: inline-block;
+  background: #e5e7eb;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+.danger-btn {
+  background: #dc2626;
+}
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.inline-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.progress-box,
+.demo-box {
+  margin-top: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+
+.error-text {
+  color: #dc2626;
+}
+
+.success-text {
+  color: #15803d;
+}
+
+.muted {
+  color: #6b7280;
+}
+
+@media (max-width: 900px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .navbar-right {
+    flex-wrap: wrap;
+  }
+
+  .list-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
