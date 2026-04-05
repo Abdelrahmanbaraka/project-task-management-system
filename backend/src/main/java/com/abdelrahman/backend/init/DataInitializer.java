@@ -7,8 +7,8 @@ import com.abdelrahman.backend.repository.RoleRepository;
 import com.abdelrahman.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -19,9 +19,11 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
+        System.out.println("=== DataInitializer started ===");
         seedRoles();
         seedUsers();
+        System.out.println("=== DataInitializer finished ===");
     }
 
     private void seedRoles() {
