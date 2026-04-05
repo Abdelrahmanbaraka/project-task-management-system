@@ -1,0 +1,13 @@
+package com.abdelrahman.backend.repository;
+
+import com.abdelrahman.backend.entity.Project;
+import com.abdelrahman.backend.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    List<Project> findByCreatedBy(User createdBy);
+    List<Project> findByArchivedFalse();
+}
+
