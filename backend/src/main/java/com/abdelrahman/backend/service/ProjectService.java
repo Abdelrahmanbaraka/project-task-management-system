@@ -14,6 +14,7 @@ import com.abdelrahman.backend.exception.ResourceNotFoundException;
 import com.abdelrahman.backend.repository.ProjectMemberRepository;
 import com.abdelrahman.backend.repository.ProjectRepository;
 import com.abdelrahman.backend.repository.TaskRepository;
+import com.abdelrahman.backend.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class ProjectService {
     private final UserService userService;
 
     public ProjectResponse createProject(ProjectCreateRequest request) {
-        User createdBy = userService.getUserEntityById(request.getCreatedByUserId());
+        User currentUser = SecurityUtils.getCurrentUser();
 
         Project project = Project.builder()
                 .name(request.getName())
@@ -38,16 +39,16 @@ public class ProjectService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .archived(false)
-                .createdBy(createdBy)
+                .createdBy(currentUser)
                 .build();
 
         Project savedProject = projectRepository.save(project);
 
-        if (!projectMemberRepository.existsByProjectAndUser(savedProject, createdBy)) {
+        if (!projectMemberRepository.existsByProjectAndUser(savedProject, currentUser)) {
             projectMemberRepository.save(
                     ProjectMember.builder()
                             .project(savedProject)
-                            .user(createdBy)
+                            .user(currentUser)
                             .build()
             );
         }
@@ -58,6 +59,17 @@ public class ProjectService {
     public List<ProjectResponse> getAllProjects() {
         return projectRepository.findAll()
                 .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<ProjectResponse> getProjectsByCurrentUser() {
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        return projectMemberRepository.findByUser(currentUser)
+                .stream()
+                .map(ProjectMember::getProject)
+                .distinct()
                 .map(this::mapToResponse)
                 .toList();
     }

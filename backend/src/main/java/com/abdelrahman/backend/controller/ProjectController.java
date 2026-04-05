@@ -29,6 +29,11 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("/me")
+    public List<ProjectResponse> getProjectsByCurrentUser() {
+        return projectService.getProjectsByCurrentUser();
+    }
+
     @GetMapping("/user/{userId}")
     public List<ProjectResponse> getProjectsByUser(@PathVariable Long userId) {
         return projectService.getProjectsByUser(userId);

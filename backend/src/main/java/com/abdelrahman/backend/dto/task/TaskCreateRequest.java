@@ -25,8 +25,5 @@ public class TaskCreateRequest {
     @NotNull(message = "Project id is required")
     private Long projectId;
 
-    @NotNull(message = "Created by user id is required")
-    private Long createdByUserId;
-
     private Long assignedToUserId;
 }

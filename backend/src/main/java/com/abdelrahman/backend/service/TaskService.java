@@ -7,8 +7,11 @@ import com.abdelrahman.backend.dto.task.TaskUpdateRequest;
 import com.abdelrahman.backend.entity.Project;
 import com.abdelrahman.backend.entity.Task;
 import com.abdelrahman.backend.entity.User;
+import com.abdelrahman.backend.exception.BadRequestException;
 import com.abdelrahman.backend.exception.ResourceNotFoundException;
+import com.abdelrahman.backend.repository.ProjectMemberRepository;
 import com.abdelrahman.backend.repository.TaskRepository;
+import com.abdelrahman.backend.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +24,23 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final ProjectService projectService;
     private final UserService userService;
+    private final ProjectMemberRepository projectMemberRepository;
 
     public TaskResponse createTask(TaskCreateRequest request) {
+        User currentUser = SecurityUtils.getCurrentUser();
         Project project = projectService.getProjectEntityById(request.getProjectId());
-        User createdBy = userService.getUserEntityById(request.getCreatedByUserId());
+
+        if (!projectMemberRepository.existsByProjectAndUser(project, currentUser)) {
+            throw new BadRequestException("Current user is not assigned to this project");
+        }
 
         User assignedTo = null;
         if (request.getAssignedToUserId() != null) {
             assignedTo = userService.getUserEntityById(request.getAssignedToUserId());
+
+            if (!projectMemberRepository.existsByProjectAndUser(project, assignedTo)) {
+                throw new BadRequestException("Assigned user is not a member of this project");
+            }
         }
 
         Task task = Task.builder()
@@ -37,7 +49,7 @@ public class TaskService {
                 .status(request.getStatus())
                 .priority(request.getPriority())
                 .project(project)
-                .createdBy(createdBy)
+                .createdBy(currentUser)
                 .assignedTo(assignedTo)
                 .build();
 
@@ -46,7 +58,12 @@ public class TaskService {
     }
 
     public List<TaskResponse> getTasksByProject(Long projectId) {
+        User currentUser = SecurityUtils.getCurrentUser();
         Project project = projectService.getProjectEntityById(projectId);
+
+        if (!projectMemberRepository.existsByProjectAndUser(project, currentUser)) {
+            throw new BadRequestException("Current user is not allowed to view tasks of this project");
+        }
 
         return taskRepository.findByProject(project)
                 .stream()
@@ -56,10 +73,20 @@ public class TaskService {
 
     public TaskResponse updateTask(Long taskId, TaskUpdateRequest request) {
         Task task = getTaskEntityById(taskId);
+        Project project = task.getProject();
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        if (!projectMemberRepository.existsByProjectAndUser(project, currentUser)) {
+            throw new BadRequestException("Current user is not allowed to update this task");
+        }
 
         User assignedTo = null;
         if (request.getAssignedToUserId() != null) {
             assignedTo = userService.getUserEntityById(request.getAssignedToUserId());
+
+            if (!projectMemberRepository.existsByProjectAndUser(project, assignedTo)) {
+                throw new BadRequestException("Assigned user is not a member of this project");
+            }
         }
 
         task.setTitle(request.getTitle());
@@ -74,6 +101,13 @@ public class TaskService {
 
     public TaskResponse updateTaskStatus(Long taskId, TaskStatusUpdateRequest request) {
         Task task = getTaskEntityById(taskId);
+        Project project = task.getProject();
+        User currentUser = SecurityUtils.getCurrentUser();
+
+        if (!projectMemberRepository.existsByProjectAndUser(project, currentUser)) {
+            throw new BadRequestException("Current user is not allowed to update task status");
+        }
+
         task.setStatus(request.getStatus());
 
         Task updatedTask = taskRepository.save(task);

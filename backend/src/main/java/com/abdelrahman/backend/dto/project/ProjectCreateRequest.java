@@ -22,7 +22,4 @@ public class ProjectCreateRequest {
 
     private LocalDate startDate;
     private LocalDate endDate;
-
-    @NotNull(message = "Created by user id is required")
-    private Long createdByUserId;
 }
