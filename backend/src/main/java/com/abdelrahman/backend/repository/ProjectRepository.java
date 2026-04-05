@@ -10,4 +10,3 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByCreatedBy(User createdBy);
     List<Project> findByArchivedFalse();
 }
-

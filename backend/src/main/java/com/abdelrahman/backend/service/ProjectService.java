@@ -1,12 +1,17 @@
 package com.abdelrahman.backend.service;
 
 import com.abdelrahman.backend.dto.project.ProjectCreateRequest;
+import com.abdelrahman.backend.dto.project.ProjectMemberAssignRequest;
 import com.abdelrahman.backend.dto.project.ProjectProgressResponse;
 import com.abdelrahman.backend.dto.project.ProjectResponse;
+import com.abdelrahman.backend.dto.project.ProjectUpdateRequest;
 import com.abdelrahman.backend.entity.Project;
+import com.abdelrahman.backend.entity.ProjectMember;
 import com.abdelrahman.backend.entity.User;
 import com.abdelrahman.backend.enums.TaskStatus;
+import com.abdelrahman.backend.exception.BadRequestException;
 import com.abdelrahman.backend.exception.ResourceNotFoundException;
+import com.abdelrahman.backend.repository.ProjectMemberRepository;
 import com.abdelrahman.backend.repository.ProjectRepository;
 import com.abdelrahman.backend.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +24,7 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final ProjectMemberRepository projectMemberRepository;
     private final TaskRepository taskRepository;
     private final UserService userService;
 
@@ -36,6 +42,16 @@ public class ProjectService {
                 .build();
 
         Project savedProject = projectRepository.save(project);
+
+        if (!projectMemberRepository.existsByProjectAndUser(savedProject, createdBy)) {
+            projectMemberRepository.save(
+                    ProjectMember.builder()
+                            .project(savedProject)
+                            .user(createdBy)
+                            .build()
+            );
+        }
+
         return mapToResponse(savedProject);
     }
 
@@ -46,9 +62,58 @@ public class ProjectService {
                 .toList();
     }
 
+    public List<ProjectResponse> getProjectsByUser(Long userId) {
+        User user = userService.getUserEntityById(userId);
+
+        return projectMemberRepository.findByUser(user)
+                .stream()
+                .map(ProjectMember::getProject)
+                .distinct()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     public Project getProjectEntityById(Long id) {
         return projectRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + id));
+    }
+
+    public ProjectResponse updateProject(Long projectId, ProjectUpdateRequest request) {
+        Project project = getProjectEntityById(projectId);
+
+        project.setName(request.getName());
+        project.setDescription(request.getDescription());
+        project.setStatus(request.getStatus());
+        project.setStartDate(request.getStartDate());
+        project.setEndDate(request.getEndDate());
+
+        Project updatedProject = projectRepository.save(project);
+        return mapToResponse(updatedProject);
+    }
+
+    public ProjectResponse archiveProject(Long projectId) {
+        Project project = getProjectEntityById(projectId);
+        project.setArchived(true);
+
+        Project archivedProject = projectRepository.save(project);
+        return mapToResponse(archivedProject);
+    }
+
+    public String assignMemberToProject(ProjectMemberAssignRequest request) {
+        Project project = getProjectEntityById(request.getProjectId());
+        User user = userService.getUserEntityById(request.getUserId());
+
+        if (projectMemberRepository.existsByProjectAndUser(project, user)) {
+            throw new BadRequestException("User is already assigned to this project");
+        }
+
+        ProjectMember projectMember = ProjectMember.builder()
+                .project(project)
+                .user(user)
+                .build();
+
+        projectMemberRepository.save(projectMember);
+        return "User assigned to project successfully";
     }
 
     public ProjectProgressResponse getProjectProgress(Long projectId) {
