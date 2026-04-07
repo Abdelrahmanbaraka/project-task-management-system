@@ -75,6 +75,7 @@ cd backend
 
 Backend läuft auf:
 http://localhost:8080
+
 3. Frontend starten
 cd frontend
 npm install
