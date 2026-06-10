@@ -120,7 +120,6 @@ EMPLOYEE darf Aufgaben bearbeiten
 
 
 
-
 Tests
 Die Anwendung enthält Unit-Tests im Backend.
 Tests ausführen:
@@ -130,7 +129,6 @@ cd backend
 Geprüft werden u.a.:
 Benutzererstellung
 Projektfortschritt-Berechnung
-
 
 
 
