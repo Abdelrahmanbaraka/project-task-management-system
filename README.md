@@ -1,143 +1,74 @@
+# Project Task Management System
 
-Dieses Projekt ist eine webbasierte Anwendung zur Verwaltung von Projekten, Aufgaben und Benutzern in einem IT-Dienstleistungsunternehmen. Ziel war es, eine bestehende Excel-basierte Lösung durch ein strukturiertes, sicheres und erweiterbares Softwaresystem zu ersetzen.
+A full-stack learning project for managing users, projects and tasks in a small IT-service organization. The application replaces an Excel-style workflow with structured data, role-based access and centralized project progress.
 
-Die Anwendung ermöglicht eine zentrale Verwaltung von Projekten und Aufgaben sowie eine klare Trennung von Benutzerrollen und Zugriffsrechten.
+## Core functionality
 
----
+- User management with `ADMIN`, `PROJECT_LEADER` and `EMPLOYEE` roles
+- Project creation, editing and archiving
+- Assignment of employees to projects
+- Task creation and status management
+- Project progress calculated from completed tasks
+- Access restrictions based on role and project membership
+- HTTP Basic authentication for the demonstration environment
 
-## 🚀 Funktionen
+## Technology stack
 
-Die Anwendung bietet folgende zentrale Funktionen:
+| Layer | Technology |
+|---|---|
+| Frontend | React 19, Vite, React Router |
+| Backend | Java 21, Spring Boot 4, Spring MVC |
+| Security | Spring Security |
+| Persistence | JPA/Hibernate, PostgreSQL |
+| Build and tests | Maven, Spring Boot Test |
 
-- Erstellung und Verwaltung von Benutzerkonten
-- Rollenbasierte Zugriffskontrolle (ADMIN, PROJECT_LEADER, EMPLOYEE)
-- Erstellung, Bearbeitung und Archivierung von Projekten
-- Zuweisung von Mitarbeitenden zu Projekten
-- Erstellung und Bearbeitung von Aufgaben innerhalb von Projekten
-- Änderung des Aufgabenstatus (OPEN, IN_PROGRESS, DONE)
-- Anzeige des Projektfortschritts basierend auf erledigten Aufgaben
-- Zugriff nur auf berechtigte Projekte
-- Authentifizierung über HTTP Basic Authentication
+## Repository structure
 
----
+```text
+project-task-management-system/
+├── backend/    Spring Boot REST application
+├── frontend/   React client
+└── docs/       Architecture and project documentation
+```
 
-## 🏗️ Technologien
+## Local setup
 
-### Frontend
-- React
-- React Router
-- Fetch API
-- CSS
-
-### Backend
-- Spring Boot
-- Spring MVC
-- Spring Security
-- JPA / Hibernate
-
-### Datenbank
-- PostgreSQL
-
-### Weitere Tools
-- Maven
-- Git & GitHub
-- Thunder Client (API-Tests)
-- draw.io (Diagramme)
-- JUnit & Mockito (Tests)
-
----
-
-
-
----
-
-## ⚙️ Installation und Start
-
-### Voraussetzungen
-
-- Java 17 oder höher
-- Node.js (empfohlen v18+)
-- PostgreSQL
-- Mav
-
-- --
-### 1. Datenbank erstellen
+Requirements: Java 21, Node.js, npm and PostgreSQL.
 
 ```sql
-
-
 CREATE DATABASE task_management_db;
+```
 
+Start the backend:
 
-2. Backend starten
+```bash
 cd backend
 ./mvnw spring-boot:run
+```
 
-Backend läuft auf:
-http://localhost:8080
+Start the frontend in a second terminal:
 
-3. Frontend starten
+```bash
 cd frontend
 npm install
 npm run dev
+```
 
-Frontend läuft auf:
-http://localhost:5173
+Run backend tests with:
 
-🔐 Demo-Benutzer
-Die Anwendung enthält initiale Benutzer:
-
-Rolle	                   Username	          Passwort
-Administrator            	admin            Admin123!
-Projektleiter	            leader           Leader123!
-Mitarbeiter               employee	       Employee123!
-
-
-🔌 API-Endpunkte (Auswahl)
-Authentifizierung prüfen
-GET /api/auth/me
-Benutzer erstellen (nur ADMIN)
-POST /api/users
-Projekte erstellen
-POST /api/projects
-Aufgaben erstellen
-POST /api/tasks
-Projektfortschritt anzeigen
-GET /api/projects/{id}/progress
-
-
-
-🔒 Sicherheit
-Die Anwendung verwendet:
-HTTP Basic Authentication
-Rollenbasierte Autorisierung
-Zugriffsbeschränkungen auf Endpunkte
-
-Beispiele:
-ADMIN darf Benutzer erstellen
-PROJECT_LEADER darf Projekte verwalten
-EMPLOYEE darf Aufgaben bearbeiten
-
-
-
-Tests
-Die Anwendung enthält Unit-Tests im Backend.
-Tests ausführen:
+```bash
 cd backend
 ./mvnw test
+```
 
-Geprüft werden u.a.:
-Benutzererstellung
-Projektfortschritt-Berechnung
+## Security scope
 
+The project demonstrates authentication and role-based authorization. HTTP Basic authentication was selected to keep the learning project focused on project and task workflows; it should be replaced by a stronger production authentication design before real-world deployment.
 
+## Current limitations
 
-⚠️ Einschränkungen
-Keine vollständige Multi-Tenancy implementiert
-Verwendung von Basic Auth statt JWT (bewusst vereinfacht)
-UI bewusst einfach gehalten (Fokus auf Funktionalität)
-
-
-
-👤 Autor
-Abdelrahman Baraka
+- No multi-tenant isolation
+- Basic authentication rather than token- or session-based production authentication
+- Simple user interface focused on functionality
+- Local PostgreSQL configuration is required
+- No public hosted demo
